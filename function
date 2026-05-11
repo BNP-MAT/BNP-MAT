@@ -1,0 +1,36 @@
+def buttonClick():
+    if len(window.lineEdit.text()) == 0:
+        QMessageBox.warning(window, "Error", "Your own text")
+        return
+    
+    if len(window.lineEdit_2.text()) == 0:
+        QMessageBox.warning(window, "Error", "Your own text")
+        return
+    
+    if len(window.lineEdit_3.text()) == 0:
+        QMessageBox.warning(window, "Error", "Your own text")
+        return
+
+
+    
+
+
+    try:
+        data = {
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M"), 
+            "box": window.comboBox.currentText(),
+            "name": window.lineEdit.text(),
+            "surname": window.lineEdit_2.text(),
+            "adress": window.lineEdit_3.text(),
+            "name_2": window.lineEdit_4.text(),
+            "town_CSP": window.lineEdit_5.text()
+        }
+        qr = qrcode.make(json.dumps(data, ensure_ascii=False))
+        qr.save("qr.png")
+
+
+        window.label.setPixmap(QPixmap("qr.png"))
+    
+        
+    except Exception as e:
+        QMessageBox.warning(window, "Error")
