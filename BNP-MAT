@@ -1,0 +1,94 @@
+import sys
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtCore import QFile, QIODevice
+from PySide6.QtGui import QPixmap
+import urllib.request, json 
+import qrcode
+from datetime import datetime
+
+
+
+def buttonClick():
+    if len(window.lineEdit.text()) == 0:
+        QMessageBox.warning(window, "Error", "Your own text")
+        return
+    
+    if len(window.lineEdit_2.text()) == 0:
+        QMessageBox.warning(window, "Error", "Your own text")
+        return
+    
+    if len(window.lineEdit_3.text()) == 0:
+        QMessageBox.warning(window, "Error", "Your own text")
+        return
+
+
+    
+
+
+    try:
+        data = {
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M"), 
+            "box": window.comboBox.currentText(),
+            "name": window.lineEdit.text(),
+            "surname": window.lineEdit_2.text(),
+            "adress": window.lineEdit_3.text(),
+            "name_2": window.lineEdit_4.text(),
+            "town_CSP": window.lineEdit_5.text()
+        }
+        qr = qrcode.make(json.dumps(data, ensure_ascii=False))
+        qr.save("qr.png")
+
+
+        window.label.setPixmap(QPixmap("qr.png"))
+    
+        
+    except Exception as e:
+        QMessageBox.warning(window, "Error")
+        
+
+
+
+       
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+
+
+    ui_file_name = "mycode.ui"
+    ui_file = QFile(ui_file_name)
+    if not ui_file.open(QIODevice.ReadOnly):
+        print(f"Cannot open {ui_file_name}: {ui_file.errorString()}")
+        sys.exit(-1)
+    loader = QUiLoader()
+    window = loader.load(ui_file)
+    ui_file.close()
+    if not window:
+        print(loader.errorString())
+        sys.exit(-1)
+    window.show()
+    
+
+
+
+    # how to get json from url (webpage)
+    with urllib.request.urlopen("URL") as url:
+        data = json.loads(url.read().decode())
+    
+
+
+
+   
+    for key, name in data.items():
+        window.comboBox.addItem(name, key)
+
+
+    
+
+
+    window.pushButton.clicked.connect(buttonClick)
+    #name= window.lineEdit
+    #surname= window.lineEdit_2
+    #adress= window.lineEdit_3
+    #name_2= window.lineEdit_4
+            
+    sys.exit(app.exec())
