@@ -1,0 +1,2 @@
+for key, name in data.items():
+        window.comboBox.addItem(name, key)
